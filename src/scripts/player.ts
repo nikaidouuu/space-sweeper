@@ -14,7 +14,7 @@ type KeyDown<T> = { [key in KeyBoardEventKey]?: T };
 
 class Player extends Character {
   private speed: number;
-  private coming: IComing;
+  public coming: IComing;
   public shotList: Shot[];
   private shotChecker: number;
   private shotDelay: number;
@@ -57,6 +57,8 @@ class Player extends Character {
   }
 
   public update() {
+    if (this.life <= 0) return;
+
     if (this.coming.isComing) {
       const comingTime = (Date.now() - this.coming.startTime) / 1000;
       let y = this.coming.startPosition.y - comingTime * 50;

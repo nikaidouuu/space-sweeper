@@ -3,13 +3,13 @@ import Vector from './vector';
 
 abstract class Character {
   protected ctx: CanvasRenderingContext2D;
-  protected point: Point;
-  protected vector: Vector;
-  protected width: number;
-  protected height: number;
+  public point: Point;
+  public vector: Vector;
+  public width: number;
+  public height: number;
   public life: number;
   private image: HTMLImageElement;
-  private angle: number;
+  public angle: number;
 
   constructor(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, life: number, imagePath: string) {
     this.ctx = ctx;
@@ -23,11 +23,11 @@ abstract class Character {
     this.angle = 270 * (Math.PI / 180);
   }
 
-  protected setVector(x: number, y: number) {
+  public setVector(x: number, y: number) {
     this.vector.set(x, y);
   }
 
-  protected setVectorFromAngle(angle: number) {
+  public setVectorFromAngle(angle: number) {
     this.angle = angle;
 
     const cos = Math.cos(angle);
