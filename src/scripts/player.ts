@@ -1,12 +1,12 @@
-import Position from './position';
+import Point from './point';
 import Character from './character';
 import Shot from './shot';
 
 interface IComing {
   isComing: boolean;
   startTime: number;
-  startPosition: Position;
-  endPosition: Position;
+  startPosition: Point;
+  endPosition: Point;
 }
 
 type KeyBoardEventKey = 'ArrowLeft' | 'ArrowRight' | 'ArrowUp' | 'ArrowDown' | 'z';
@@ -47,8 +47,8 @@ class Player extends Character {
   public setComing(startX: number, startY: number, endX: number, endY: number) {
     this.coming.isComing = true;
     this.coming.startTime = Date.now();
-    this.coming.startPosition = new Position(startX, startY);
-    this.coming.endPosition = new Position(endX, endY);
+    this.coming.startPosition = new Point(startX, startY);
+    this.coming.endPosition = new Point(endX, endY);
     this.point.set(startX, startY);
   }
 

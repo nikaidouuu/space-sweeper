@@ -1,9 +1,10 @@
-import Position from './position';
+import Point from './point';
+import Vector from './vector';
 
 abstract class Character {
   protected ctx: CanvasRenderingContext2D;
-  protected point: Position;
-  protected vector: Position;
+  protected point: Point;
+  protected vector: Vector;
   protected width: number;
   protected height: number;
   public life: number;
@@ -12,8 +13,8 @@ abstract class Character {
 
   constructor(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, life: number, imagePath: string) {
     this.ctx = ctx;
-    this.point = new Position(x, y);
-    this.vector = new Position(0.0, -1.0);
+    this.point = new Point(x, y);
+    this.vector = new Vector(0.0, -1.0);
     this.width = w;
     this.height = h;
     this.life = life;
@@ -52,7 +53,7 @@ abstract class Character {
     this.ctx.save();
 
     this.ctx.translate(this.point.x, this.point.y);
-    this.ctx.rotate(this.angle - Math.PI * 1.5);
+    this.ctx.rotate(this.angle - (Math.PI * 1.5));
     this.ctx.drawImage(
       this.image,
       -offsetX,
