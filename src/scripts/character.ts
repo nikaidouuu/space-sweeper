@@ -9,7 +9,6 @@ abstract class Character {
   public height: number;
   public life: number;
   private image: HTMLImageElement;
-  public isDestroyed: boolean;
   public frame: number;
   public angle: number;
 
@@ -22,7 +21,6 @@ abstract class Character {
     this.life = life;
     this.image = new Image();
     this.image.src = imagePath;
-    this.isDestroyed = false;
     this.frame = 0;
     this.angle = 270 * (Math.PI / 180);
   }

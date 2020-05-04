@@ -1,11 +1,12 @@
 import Character from './character';
 import Vector from './vector';
 import Player from './player';
+import Enemy from './enemy';
 
 class Shot extends Character {
   private speed: number;
   private power: number;
-  private targetList: Character[];
+  private targetList: Array<Player | Enemy>;
 
   constructor(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, imagePath: string) {
     super(ctx, x, y, w, h, 0, imagePath);
@@ -44,7 +45,10 @@ class Shot extends Character {
     this.targetList.forEach(target => {
       if (this.life <= 0 || target.life <= 0) return;
 
-      const distance = Vector.calcDistance(this.point.x - target.point.x, this.point.y - target.point.y);
+      const distance = Vector.calcDistance(
+        this.point.x - target.point.x,
+        this.point.y - target.point.y
+      );
 
       if (distance <= (this.width + target.width) / 4) {
         if (target instanceof Player) {

@@ -1,4 +1,5 @@
 import Player from './player';
+import PowerUp from './powerUp';
 import Pillbug from './pillbug';
 import Shot from './shot';
 import SceneController from './sceneController';
@@ -13,6 +14,7 @@ class Game {
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
   private player: Player;
+  private powerUp: PowerUp;
   private enemyList: Array<Pillbug>;
   private scene: SceneController;
   private bgImage: HTMLImageElement;
@@ -23,6 +25,7 @@ class Game {
     this.canvas.height = CANVAS_HEIGHT;
     this.ctx = this.canvas.getContext('2d')!;
     this.player = new Player(this.ctx, 0, 0);
+    this.powerUp = new PowerUp(this.ctx, 0, 0);
     this.enemyList = [];
     this.scene = new SceneController();
     this.bgImage = new Image();
@@ -53,8 +56,18 @@ class Game {
           shot.setTargetList(this.enemyList);
 
           return shot;
+        }),
+      Array
+        .from({ length: 20 })
+        .map(() => {
+          const shot = new Shot(this.ctx, 0, 0, 16, 36, shotPath);
+          shot.setTargetList(this.enemyList);
+
+          return shot;
         })
     );
+
+    this.powerUp.setTarget(this.player);
 
     this.enemyList.forEach(enemy => {
       enemy.setTarget(this.player);
@@ -95,6 +108,15 @@ class Game {
           }
         }
       }
+
+      if (this.scene.frame % 200 === 0) {
+        this.powerUp.set(
+          Math.random() * (this.canvas.width - this.powerUp.width) + this.powerUp.width / 2,
+          0,
+          1
+        );
+        this.powerUp.setVector(0, 1);
+      }
     });
 
     this.scene.use('coming');
@@ -111,6 +133,8 @@ class Game {
     this.scene.update();
     this.player.update();
     this.player.shotList.forEach(shot => shot.update());
+    this.player.levelTwoShotList.forEach(shot => shot.update());
+    this.powerUp.update();
     this.enemyList.forEach(enemy => {
       enemy.update();
       enemy.shotList.forEach(shot => shot.update());

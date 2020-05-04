@@ -4,12 +4,15 @@ import Shot from './shot';
 abstract class Enemy extends Character {
   protected speed: number;
   protected target: Character;
+  public isDestroyed: boolean;
   public shotList: Shot[];
 
   constructor(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, imagePath: string) {
     super(ctx, x, y, w, h, 0, imagePath);
 
     this.speed = 2.5;
+    this.target = null;
+    this.isDestroyed = false;
     this.shotList = null;
   }
 
