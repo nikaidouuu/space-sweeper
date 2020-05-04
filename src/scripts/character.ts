@@ -9,6 +9,8 @@ abstract class Character {
   public height: number;
   public life: number;
   private image: HTMLImageElement;
+  public isDestroyed: boolean;
+  public frame: number;
   public angle: number;
 
   constructor(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, life: number, imagePath: string) {
@@ -20,7 +22,15 @@ abstract class Character {
     this.life = life;
     this.image = new Image();
     this.image.src = imagePath;
+    this.isDestroyed = false;
+    this.frame = 0;
     this.angle = 270 * (Math.PI / 180);
+  }
+
+  public setImage(w: number, h: number, imagePath: string) {
+    this.width = w;
+    this.height = h;
+    this.image.src = imagePath;
   }
 
   public setVector(x: number, y: number) {
@@ -35,7 +45,7 @@ abstract class Character {
     this.vector.set(cos, sin);
   }
 
-  protected draw() {
+  public draw() {
     const offsetX = this.width / 2;
     const offsetY = this.height / 2;
 
@@ -46,7 +56,7 @@ abstract class Character {
     );
   }
 
-  protected drawWithAngle() {
+  public drawWithAngle() {
     const offsetX = this.width / 2;
     const offsetY = this.height / 2;
 

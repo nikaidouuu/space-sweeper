@@ -53,6 +53,11 @@ class Shot extends Character {
 
         target.life -= this.power;
         this.life = 0;
+
+        if (target.life <= 0) {
+          target.isDestroyed = true;
+          target.frame = 0;
+        }
       }
     });
 

@@ -2,7 +2,6 @@ import Player from './player';
 import Pillbug from './pillbug';
 import Shot from './shot';
 import SceneController from './sceneController';
-import playerPath from '../assets/images/player/Ship_LVL_1.png';
 import shotPath from '../assets/images/player/effects/Fire_Shot_5_2.png';
 import bgPath from '../assets/images/bg/Space_BG_01.png';
 
@@ -23,7 +22,7 @@ class Game {
     this.canvas.width = CANVAS_WIDTH;
     this.canvas.height = CANVAS_HEIGHT;
     this.ctx = this.canvas.getContext('2d')!;
-    this.player = new Player(this.ctx, 0, 0, 80, 64, playerPath);
+    this.player = new Player(this.ctx, 0, 0);
     this.enemyList = [];
     this.scene = new SceneController();
     this.bgImage = new Image();

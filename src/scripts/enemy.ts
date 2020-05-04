@@ -3,7 +3,6 @@ import Shot from './shot';
 
 abstract class Enemy extends Character {
   protected speed: number;
-  protected frame: number;
   protected target: Character;
   public shotList: Shot[];
 
@@ -11,7 +10,6 @@ abstract class Enemy extends Character {
     super(ctx, x, y, w, h, 0, imagePath);
 
     this.speed = 2.5;
-    this.frame = 0;
     this.shotList = null;
   }
 

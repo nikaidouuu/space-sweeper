@@ -1,6 +1,10 @@
 import Point from './point';
 import Character from './character';
 import Shot from './shot';
+import imagePath from '../assets/images/player/explosion/Explosion_1_000.png';
+import destroyedPath from '../assets/images/player/explosion/Explosion_1_005.png';
+import destroyedPath2 from '../assets/images/player/explosion/Explosion_1_006.png';
+import destroyedPath3 from '../assets/images/player/explosion/Explosion_1_008.png';
 
 interface IComing {
   isComing: boolean;
@@ -20,8 +24,8 @@ class Player extends Character {
   private shotDelay: number;
   public keyDown: KeyDown<boolean>;
 
-  constructor(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, imagePath: string) {
-    super(ctx, x, y, w, h, 1, imagePath);
+  constructor(ctx: CanvasRenderingContext2D, x: number, y: number) {
+    super(ctx, x, y, 80, 64, 1, imagePath);
 
     this.speed = 2.5;
     this.coming = {
@@ -57,6 +61,24 @@ class Player extends Character {
   }
 
   public update() {
+    if (this.isDestroyed) {
+      if (this.frame === 0) {
+        this.setImage(80, 64, destroyedPath);
+      } else if (this.frame >= 8 && this.frame < 16) {
+        this.setImage(80, 64, destroyedPath2);
+      } else if (this.frame >= 16 && this.frame < 24) {
+        this.setImage(80, 64, destroyedPath3);
+      } else if (this.frame >= 24) {
+        this.setImage(80, 64, imagePath);
+        this.isDestroyed = false;
+
+        return;
+      }
+
+      this.frame++;
+      this.draw();
+    }
+
     if (this.life <= 0) return;
 
     if (this.coming.isComing) {
