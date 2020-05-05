@@ -39,6 +39,7 @@ class PowerUp extends Character {
     if (distance <= (this.width + this.target.width) / 4) {
       if (this.target.coming.isComing) return;
 
+      window.score = Math.min(window.score + 100, 9999999);
       this.life = 0;
       this.target.upgrade();
       this.sound.play();

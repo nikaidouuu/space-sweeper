@@ -30,6 +30,7 @@ class Player extends Character {
   private shotSound: HTMLAudioElement;
   private explosionSound: HTMLAudioElement;
   public isDestroyed: boolean;
+  public isEnterRestart: boolean;
   public keyDown: KeyDown<boolean>;
 
   constructor(ctx: CanvasRenderingContext2D, x: number, y: number) {
@@ -50,10 +51,19 @@ class Player extends Character {
     this.shotSound = new Audio(shotSoundPath);
     this.explosionSound = new Audio(explosionSoundPath);
     this.isDestroyed = false;
+    this.isEnterRestart = false;
     this.keyDown = {};
 
+    this.setUpEvent();
+  }
+
+  private setUpEvent() {
     window.addEventListener('keydown', e => {
       this.keyDown[e.key] = true;
+
+      if (e.key === 'Enter' && this.life <= 0) {
+        this.isEnterRestart = true;
+      }
     });
 
     window.addEventListener('keyup', e => {
@@ -62,6 +72,7 @@ class Player extends Character {
   }
 
   public setComing(startX: number, startY: number, endX: number, endY: number) {
+    this.life = 1;
     this.coming.isComing = true;
     this.coming.startTime = Date.now();
     this.coming.startPosition = new Point(startX, startY);
@@ -99,6 +110,8 @@ class Player extends Character {
       } else if (this.frame >= 16 && this.frame < 24) {
         this.setImage(80, 64, destroyedPath3);
       } else if (this.frame >= 24) {
+        this.setImage(80, 64, imagePath1);
+        this.level = 1;
         this.isDestroyed = false;
 
         return;

@@ -2,6 +2,7 @@ import Character from './character';
 import Vector from './vector';
 import Player from './player';
 import Enemy from './enemy';
+import Pillbug from './pillbug';
 
 class Shot extends Character {
   private speed: number;
@@ -23,7 +24,7 @@ class Shot extends Character {
     this.life = 1;
   }
 
-  public setTargetList(targetList: Character[]) {
+  public setTargetList(targetList: Array<Player | Enemy>) {
     this.targetList = targetList;
   }
 
@@ -53,6 +54,10 @@ class Shot extends Character {
       if (distance <= (this.width + target.width) / 4) {
         if (target instanceof Player) {
           if (target.coming.isComing) return;
+        }
+
+        if (target instanceof Pillbug) {
+          window.score = Math.min(window.score + 100, 9999999);
         }
 
         target.life -= this.power;
