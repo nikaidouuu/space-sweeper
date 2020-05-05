@@ -21,7 +21,6 @@ type KeyDown<T> = { [key in KeyBoardEventKey]?: T };
 
 class Player extends Character {
   public level: number;
-  private speed: number;
   public coming: Coming;
   public shotList: Shot[];
   public levelTwoShotList: Shot[];

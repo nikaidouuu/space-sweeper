@@ -9,6 +9,7 @@ abstract class Character {
   public height: number;
   public life: number;
   private image: HTMLImageElement;
+  protected speed: number;
   public frame: number;
   public angle: number;
 
@@ -21,6 +22,7 @@ abstract class Character {
     this.life = life;
     this.image = new Image();
     this.image.src = imagePath;
+    this.speed = 0;
     this.frame = 0;
     this.angle = 270 * (Math.PI / 180);
   }

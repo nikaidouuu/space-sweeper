@@ -1,32 +1,14 @@
-import Character from './character';
-import Vector from './vector';
+import Shot from './shot';
 import Player from './player';
-import Enemy from './enemy';
 import Pillbug from './pillbug';
 import Boss from './boss';
+import Vector from './vector';
 
-class Shot extends Character {
-  protected power: number;
-  protected targetList: Array<Player | Enemy>;
-
+class HomingShot extends Shot {
   constructor(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, imagePath: string) {
-    super(ctx, x, y, w, h, 0, imagePath);
+    super(ctx, x, y, w, h, imagePath);
 
-    this.speed = 5;
-    this.power = 1;
-    this.targetList = [];
-  }
-
-  public set(x: number, y: number, speed: number = 5, power: number = 1) {
-    this.point.set(x, y);
-    this.speed = speed;
-    this.power = power;
-    this.life = 1;
-    this.frame = 0;
-  }
-
-  public setTargetList(targetList: Array<Player | Enemy>) {
-    this.targetList = targetList;
+    this.power = 2;
   }
 
   public update() {
@@ -41,8 +23,32 @@ class Shot extends Character {
       this.life = 0;
     }
 
+    const target = this.targetList[0];
+
+    if (this.frame < 150) {
+      const unitVector = Vector.calcUnitVector(
+        target.point.x - this.point.x,
+        target.point.y - this.point.y
+      );
+
+      this.vector = Vector.calcUnitVector(
+        this.vector.x,
+        this.vector.y
+      );
+
+      const crossProduct = this.vector.calcCrossProduct(unitVector);
+      const radius = Math.PI / 180.0;
+
+      if (crossProduct > 0.0) {
+        this.vector.rotate2D(radius);
+      } else if (crossProduct < 0.0) {
+        this.vector.rotate2D(-radius);
+      }
+    }
+
     this.point.x += this.vector.x * this.speed;
     this.point.y += this.vector.y * this.speed;
+    this.angle = Math.atan2(this.vector.y, this.vector.x);
 
     this.targetList.forEach(target => {
       if (this.life <= 0 || target.life <= 0) return;
@@ -74,7 +80,8 @@ class Shot extends Character {
     });
 
     this.drawWithAngle();
+    this.frame++;
   }
 }
 
-export default Shot;
+export default HomingShot;

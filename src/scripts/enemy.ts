@@ -2,16 +2,15 @@ import Character from './character';
 import Shot from './shot';
 
 abstract class Enemy extends Character {
-  protected speed: number;
   protected target: Character;
   public shotList: Shot[];
   protected explosionSound: HTMLAudioElement;
   public isDestroyed: boolean;
 
-  constructor(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, imagePath: string) {
+  constructor(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, imagePath: string, speed: number = 3) {
     super(ctx, x, y, w, h, 0, imagePath);
 
-    this.speed = 2.5;
+    this.speed = speed;
     this.target = null;
     this.shotList = null;
     this.explosionSound = null;

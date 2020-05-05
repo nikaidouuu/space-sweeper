@@ -9,7 +9,7 @@ class SceneController {
   constructor() {
     this.scene = {};
     this.activeScene = null;
-    this.frame = 0;
+    this.frame = null;
   }
 
   public add(name: string, callback: () => void) {
@@ -20,7 +20,7 @@ class SceneController {
     if (!this.scene[name]) return;
 
     this.activeScene = this.scene[name];
-    this.frame = 0;
+    this.frame = -1;
   }
 
   public update() {
