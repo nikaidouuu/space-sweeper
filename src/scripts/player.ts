@@ -6,6 +6,8 @@ import imagePath2 from '../assets/images/player/explosion/Explosion_2_000.png';
 import destroyedPath1 from '../assets/images/player/explosion/Explosion_1_005.png';
 import destroyedPath2 from '../assets/images/player/explosion/Explosion_1_006.png';
 import destroyedPath3 from '../assets/images/player/explosion/Explosion_1_008.png';
+import shotSoundPath from '../assets/sounds/Shot.mp3';
+import explosionSoundPath from '../assets/sounds/Explosion1.mp3';
 
 type Coming = {
   isComing: boolean;
@@ -25,6 +27,8 @@ class Player extends Character {
   public levelTwoShotList: Shot[];
   private shotChecker: number;
   private shotDelay: number;
+  private shotSound: HTMLAudioElement;
+  private explosionSound: HTMLAudioElement;
   public isDestroyed: boolean;
   public keyDown: KeyDown<boolean>;
 
@@ -43,6 +47,8 @@ class Player extends Character {
     this.levelTwoShotList = null;
     this.shotChecker = 0;
     this.shotDelay = 10;
+    this.shotSound = new Audio(shotSoundPath);
+    this.explosionSound = new Audio(explosionSoundPath);
     this.isDestroyed = false;
     this.keyDown = {};
 
@@ -86,6 +92,7 @@ class Player extends Character {
   public update() {
     if (this.isDestroyed) {
       if (this.frame === 0) {
+        this.explosionSound.play();
         this.setImage(80, 64, destroyedPath1);
       } else if (this.frame >= 8 && this.frame < 16) {
         this.setImage(80, 64, destroyedPath2);
@@ -136,6 +143,11 @@ class Player extends Character {
 
       if (this.keyDown.z) {
         if (this.shotChecker >= 0) {
+          this.shotSound.play();
+          if (this.shotSound.currentTime > 0) {
+            this.shotSound.currentTime = 0;
+          }
+
           for (const shot of this.shotList) {
             if (shot.life <= 0) {
               shot.set(this.point.x, this.point.y);

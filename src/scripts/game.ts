@@ -4,7 +4,7 @@ import Pillbug from './pillbug';
 import Shot from './shot';
 import SceneController from './sceneController';
 import shotPath from '../assets/images/player/effects/Fire_Shot_5_2.png';
-import bgPath from '../assets/images/bg/Space_BG_01.png';
+import bgImagePath from '../assets/images/bg/Space_BG_01.png';
 
 const CANVAS_WIDTH = 540;
 const CANVAS_HEIGHT = 688;
@@ -29,7 +29,7 @@ class Game {
     this.enemyList = [];
     this.scene = new SceneController();
     this.bgImage = new Image();
-    this.bgImage.src = bgPath;
+    this.bgImage.src = bgImagePath;
 
     for (let i = 0; i < 10; i++) {
       this.enemyList.push(new Pillbug(this.ctx, 0, 0));
@@ -109,7 +109,7 @@ class Game {
         }
       }
 
-      if (this.scene.frame % 200 === 0) {
+      if (this.scene.frame % 500 === 0) {
         this.powerUp.set(
           Math.random() * (this.canvas.width - this.powerUp.width) + this.powerUp.width / 2,
           0,
