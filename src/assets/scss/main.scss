@@ -1,9 +1,58 @@
 @import 'reset';
 
-html, body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+$CANVAS_WIDTH: 540px;
+$CANVAS_HEIGHT: 688px;
+$BG_HEIGHT: 960px;
+
+@keyframes move {
+  from {
+    transform: translateY(0%);
+  }
+
+  to {
+    transform: translateY(100%);
+  }
+}
+
+.container {
+  position: absolute;
+  display: block;
+  width: $CANVAS_WIDTH;
+  height: $CANVAS_HEIGHT;
+  margin: 0 auto;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.bg {
+  position: absolute;
   width: 100%;
   height: 100%;
+  overflow: hidden;
+}
+
+.bg:before {
+  bottom: calc(100% - 1px);
+}
+
+.bg:before, .bg:after {
+  content: "";
+  position: absolute;
+  width: $CANVAS_WIDTH;
+  height: $BG_HEIGHT;
+  background-image: url('../images/bg/Space_BG_01.png');
+  background-size: 100%;
+  animation: move 8s reverse infinite linear;
+}
+
+#canvas {
+  position: absolute;
+  display: block;
+  margin: 0 auto;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
