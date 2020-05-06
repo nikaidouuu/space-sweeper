@@ -9,7 +9,7 @@ class PowerUp extends Character {
   private sound: HTMLAudioElement;
 
   constructor(ctx: CanvasRenderingContext2D, x: number, y: number) {
-    super(ctx, x, y, 40, 40, 0, imagePath);
+    super(ctx, x, y, 40, 40, imagePath, 1.0, 0);
 
     this.target = null;
     this.sound = new Audio(soundPath);
@@ -45,7 +45,7 @@ class PowerUp extends Character {
       this.sound.play();
     }
 
-    this.point.y += this.vector.y * 2;
+    this.point.y += this.vector.y * this.speed;
 
     this.draw();
   }

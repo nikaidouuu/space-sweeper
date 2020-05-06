@@ -1,8 +1,10 @@
 import Point from './point';
 import Character from './character';
 import Shot from './shot';
+import HomingShot from './homingShot';
 import imagePath1 from '../assets/images/player/explosion/Explosion_1_000.png';
 import imagePath2 from '../assets/images/player/explosion/Explosion_2_000.png';
+import imagePath3 from '../assets/images/player/explosion/Explosion_3_000.png';
 import destroyedPath1 from '../assets/images/player/explosion/Explosion_1_005.png';
 import destroyedPath2 from '../assets/images/player/explosion/Explosion_1_006.png';
 import destroyedPath3 from '../assets/images/player/explosion/Explosion_1_008.png';
@@ -16,27 +18,22 @@ type Coming = {
   endPosition: Point;
 };
 
-type KeyBoardEventKey = 'ArrowLeft' | 'ArrowRight' | 'ArrowUp' | 'ArrowDown' | 'z';
-type KeyDown<T> = { [key in KeyBoardEventKey]?: T };
-
 class Player extends Character {
   public level: number;
   public coming: Coming;
   public shotList: Shot[];
   public levelTwoShotList: Shot[];
+  public levelThreeShotList: HomingShot[];
+  public isDestroyed: boolean;
   private shotChecker: number;
   private shotDelay: number;
-  private shotSound: HTMLAudioElement;
-  private explosionSound: HTMLAudioElement;
-  public isDestroyed: boolean;
-  public isEnterRestart: boolean;
-  public keyDown: KeyDown<boolean>;
+  private readonly shotSound: HTMLAudioElement;
+  private readonly explosionSound: HTMLAudioElement;
 
   constructor(ctx: CanvasRenderingContext2D, x: number, y: number) {
-    super(ctx, x, y, 80, 64, 1, imagePath1);
+    super(ctx, x, y, 80, 64, imagePath1, 3.0, 0);
 
     this.level = 1;
-    this.speed = 2.5;
     this.coming = {
       isComing: false,
       startTime: null,
@@ -45,29 +42,12 @@ class Player extends Character {
     };
     this.shotList = null;
     this.levelTwoShotList = null;
+    this.levelThreeShotList = null;
     this.shotChecker = 0;
     this.shotDelay = 10;
     this.shotSound = new Audio(shotSoundPath);
     this.explosionSound = new Audio(explosionSoundPath);
     this.isDestroyed = false;
-    this.isEnterRestart = false;
-    this.keyDown = {};
-
-    this.setUpEvent();
-  }
-
-  private setUpEvent() {
-    window.addEventListener('keydown', e => {
-      this.keyDown[e.key] = true;
-
-      if (e.key === 'Enter' && this.life <= 0) {
-        this.isEnterRestart = true;
-      }
-    });
-
-    window.addEventListener('keyup', e => {
-      this.keyDown[e.key] = false;
-    });
   }
 
   public setComing(startX: number, startY: number, endX: number, endY: number) {
@@ -79,9 +59,10 @@ class Player extends Character {
     this.point.set(startX, startY);
   }
 
-  public setShotList(shotList: Shot[], levelTwoShotList: Shot[]) {
+  public setShotList(shotList: Shot[], levelTwoShotList: Shot[], levelThreeShotList: HomingShot[]) {
     this.shotList = shotList;
     this.levelTwoShotList = levelTwoShotList;
+    this.levelThreeShotList = levelThreeShotList;
   }
 
   public upgrade() {
@@ -93,6 +74,9 @@ class Player extends Character {
         break;
       case 2:
         this.setImage(80, 64, imagePath2);
+        break;
+      case 3:
+        this.setImage(88, 70, imagePath3);
         break;
       default:
         break;
@@ -137,32 +121,33 @@ class Player extends Character {
 
       this.point.set(this.point.x, y);
     } else {
-      if (this.keyDown.ArrowLeft) {
+      if (window.keyDown.ArrowLeft) {
         this.point.x -= this.speed;
       }
 
-      if (this.keyDown.ArrowRight) {
+      if (window.keyDown.ArrowRight) {
         this.point.x += this.speed;
       }
 
-      if (this.keyDown.ArrowUp) {
+      if (window.keyDown.ArrowUp) {
         this.point.y -= this.speed;
       }
 
-      if (this.keyDown.ArrowDown) {
+      if (window.keyDown.ArrowDown) {
         this.point.y += this.speed;
       }
 
-      if (this.keyDown.z) {
+      if (window.keyDown.z) {
         if (this.shotChecker >= 0) {
           this.shotSound.play();
+
           if (this.shotSound.currentTime > 0) {
             this.shotSound.currentTime = 0;
           }
 
           for (const shot of this.shotList) {
             if (shot.life <= 0) {
-              shot.set(this.point.x, this.point.y);
+              shot.set(this.point.x, this.point.y, 10.0);
               this.shotChecker = -this.shotDelay;
 
               break;
@@ -177,9 +162,28 @@ class Player extends Character {
               const CW = 280 * (Math.PI / 180);
 
               if (leftShot.life <= 0 && rightShot.life <= 0) {
-                leftShot.set(this.point.x, this.point.y);
+                leftShot.set(this.point.x, this.point.y, 10.0);
                 leftShot.setVectorFromAngle(CCW);
-                rightShot.set(this.point.x, this.point.y);
+                rightShot.set(this.point.x, this.point.y, 10.0);
+                rightShot.setVectorFromAngle(CW);
+                this.shotChecker = -this.shotDelay;
+
+                break;
+              }
+            }
+          }
+
+          if (this.level >= 3) {
+            for (let i = 0; i < this.levelThreeShotList.length; i += 2) {
+              const leftShot = this.levelThreeShotList[i];
+              const rightShot = this.levelThreeShotList[i + 1];
+              const CCW = 245 * (Math.PI / 180);
+              const CW = 295 * (Math.PI / 180);
+
+              if (leftShot.life <= 0 && rightShot.life <= 0) {
+                leftShot.set(this.point.x, this.point.y, 12.0);
+                leftShot.setVectorFromAngle(CCW);
+                rightShot.set(this.point.x, this.point.y, 12.0);
                 rightShot.setVectorFromAngle(CW);
                 this.shotChecker = -this.shotDelay;
 

@@ -1,18 +1,18 @@
 import Character from './character';
 import Vector from './vector';
 import Player from './player';
-import Enemy from './enemy';
-import Pillbug from './pillbug';
-import Boss from './boss';
+import Enemy from './enemies/enemy';
+import Scorpion from './enemies/scorpion';
+import Pillbug from './enemies/pillbug';
+import Boss from './enemies/boss';
 
 class Shot extends Character {
   protected power: number;
   protected targetList: Array<Player | Enemy>;
 
   constructor(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, imagePath: string) {
-    super(ctx, x, y, w, h, 0, imagePath);
+    super(ctx, x, y, w, h, imagePath, 5, 0);
 
-    this.speed = 5;
     this.power = 1;
     this.targetList = [];
   }
@@ -57,18 +57,20 @@ class Shot extends Character {
           if (target.coming.isComing) return;
         }
 
-        if (target instanceof Pillbug) {
-          window.score = Math.min(window.score + 500, 9999999);
-        } else if (target instanceof Boss) {
-          window.score = Math.min(window.score + 2000, 9999999);
-        }
-
         target.life -= this.power;
         this.life = 0;
 
         if (target.life <= 0) {
           target.isDestroyed = true;
           target.frame = 0;
+
+          if (target instanceof Pillbug) {
+            window.score = Math.min(window.score + 500, 9999999);
+          } else if (target instanceof Scorpion) {
+            window.score = Math.min(window.score + 1000, 9999999);
+          } else if (target instanceof Boss) {
+            window.score = Math.min(window.score + 2000, 9999999);
+          }
         }
       }
     });
