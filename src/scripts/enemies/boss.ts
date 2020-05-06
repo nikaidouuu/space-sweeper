@@ -1,25 +1,20 @@
 import Enemy from './enemy';
-import HomingShot from './homingShot';
-import Vector from './vector';
-import imagePath from '../assets/images/boss/boss_sprites/Attack_01_000.png';
-import explosionSoundPath from '../assets/sounds/Explosion2.mp3';
-import destroyedPath1 from '../assets/images/boss/effects_sprites/Explosion_005.png';
-import destroyedPath2 from '../assets/images/boss/effects_sprites/Explosion_006.png';
-import destroyedPath3 from '../assets/images/boss/effects_sprites/Explosion_007.png';
-import destroyedPath4 from '../assets/images/boss/effects_sprites/Explosion_008.png';
-
-type Mode = 'coming' | 'fighting';
+import HomingShot from '../homingShot';
+import Vector from '../vector';
+import imagePath from '../../assets/images/boss/boss_sprites/Attack_01_000.png';
+import explosionSoundPath from '../../assets/sounds/Explosion2.mp3';
+import destroyedPath1 from '../../assets/images/boss/effects_sprites/Explosion_005.png';
+import destroyedPath2 from '../../assets/images/boss/effects_sprites/Explosion_006.png';
+import destroyedPath3 from '../../assets/images/boss/effects_sprites/Explosion_007.png';
+import destroyedPath4 from '../../assets/images/boss/effects_sprites/Explosion_008.png';
 
 class Boss extends Enemy {
-  private mode: Mode;
-  public homingShotList: HomingShot[];
+  public homingShotList: HomingShot[] | null;
 
   constructor(ctx: CanvasRenderingContext2D, x: number, y: number) {
-    super(ctx, x, y, 120, 132, imagePath, 3);
+    super(ctx, x, y, 120, 132, imagePath, explosionSoundPath, 2.0);
 
-    this.mode = 'coming';
     this.homingShotList = null;
-    this.explosionSound = new Audio(explosionSoundPath);
   }
 
   public setHomingShotList(homingShotList: HomingShot[]) {
@@ -65,8 +60,8 @@ class Boss extends Enemy {
       case 'coming':
         this.point.y += this.speed;
 
-        if (this.point.y >= 102) {
-          this.point.y = 102;
+        if (this.point.y >= 100) {
+          this.point.y = 100;
           this.mode = 'fighting';
           this.frame = 0;
         }
@@ -74,18 +69,18 @@ class Boss extends Enemy {
         break;
       case 'fighting':
         if (this.frame % 1000 < 500) {
-          if (this.frame % 12 === 0) {
+          if (this.frame % 120 > 60 && this.frame % 10 === 0) {
             const tx = this.target.point.x - this.point.x;
             const ty = this.target.point.y - this.point.y;
             const tv = Vector.calcUnitVector(tx, ty);
 
-            this.fire(tv.x, tv.y);
+            this.fire(tv.x, tv.y, 3.0);
           }
-        } else if (this.frame % 50 === 0) {
-          this.fireHoming(0, 1);
+        } else if (this.frame % 80 === 0) {
+          this.fireHoming();
         }
 
-        this.point.x += Math.cos(this.frame / 90) * 2;
+        this.point.x += Math.cos(this.frame / 90) * this.speed;
 
         break;
       default:

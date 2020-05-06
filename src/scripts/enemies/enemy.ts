@@ -1,23 +1,25 @@
-import Character from './character';
-import Shot from './shot';
+import Character from '../character';
+import Shot from '../shot';
 
 abstract class Enemy extends Character {
-  protected target: Character;
-  public shotList: Shot[];
-  protected explosionSound: HTMLAudioElement;
+  public shotList: Shot[] | null;
   public isDestroyed: boolean;
+  protected mode: string;
+  protected target: Character | null;
+  protected readonly explosionSound: HTMLAudioElement;
 
-  constructor(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, imagePath: string, speed: number = 3) {
-    super(ctx, x, y, w, h, 0, imagePath);
+  constructor(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, imagePath: string, explosionSoundPath: string, speed: number) {
+    super(ctx, x, y, w, h, imagePath, speed, 0);
 
     this.speed = speed;
-    this.target = null;
     this.shotList = null;
-    this.explosionSound = null;
     this.isDestroyed = false;
+    this.mode = '';
+    this.target = null;
+    this.explosionSound = new Audio(explosionSoundPath);
   }
 
-  public set(x: number, y: number, life: number) {
+  public set(x: number, y: number, life = 1) {
     this.point.set(x, y);
     this.life = life;
     this.frame = 0;
@@ -25,6 +27,10 @@ abstract class Enemy extends Character {
 
   public setShotList(shotList: Shot[]) {
     this.shotList = shotList;
+  }
+
+  public setMode(mode: string) {
+    this.mode = mode;
   }
 
   public setTarget(target: Character) {
