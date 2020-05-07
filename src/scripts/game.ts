@@ -1,17 +1,17 @@
-import Player from './player';
-import PowerUp from './powerUp';
-import Shot from './shot';
-import HomingShot from './homingShot';
 import SceneController from './sceneController';
-import Pillbug from './enemies/pillbug';
-import Scorpion from './enemies/scorpion';
-import Boss from './enemies/boss';
+import Player from './characters/player';
+import PowerUp from './characters/powerUp';
+import Shot from './characters/shots/shot';
+import HomingShot from './characters/shots/homingShot';
+import Boss from './characters/enemies/boss';
+import Pillbug from './characters/enemies/pillbug';
+import Scorpion from './characters/enemies/scorpion';
 import bgImagePath from '../assets/images/bg/Space_BG_04.png';
 import shotPath from '../assets/images/player/effects/Fire_Shot_5_2.png';
 import missilePath from '../assets/images/object/props/Missile_01.png';
-import enemyShotPath from '../assets/images/ufo/ship_effects/Fire_Shot_1_4.png';
 import bossShotPath from '../assets/images/boss/effects/Shot_02.png';
 import bossMissilePath from '../assets/images/boss/effects/Missile.png';
+import enemyShotPath from '../assets/images/ufo/ship_effects/Fire_Shot_1_4.png';
 
 const CANVAS_WIDTH = 540;
 const CANVAS_HEIGHT = 688;
@@ -19,12 +19,12 @@ const CANVAS_HEIGHT = 688;
 class Game {
   private readonly canvas: HTMLCanvasElement;
   private readonly ctx: CanvasRenderingContext2D;
+  private readonly scene: SceneController;
   private readonly player: Player;
   private readonly powerUp: PowerUp;
+  private readonly boss: Boss;
   private readonly pillbugList: Pillbug[];
   private readonly scorpionList: Scorpion[];
-  private readonly boss: Boss;
-  private readonly scene: SceneController;
   private readonly bgImage: HTMLImageElement;
   private isGameStart: boolean;
   private isPaused: boolean;
@@ -34,12 +34,12 @@ class Game {
     this.canvas.width = CANVAS_WIDTH;
     this.canvas.height = CANVAS_HEIGHT;
     this.ctx = this.canvas.getContext('2d')!;
+    this.scene = new SceneController();
     this.player = new Player(this.ctx, 0, 0);
     this.powerUp = new PowerUp(this.ctx, 0, 0);
-    this.scene = new SceneController();
+    this.boss = new Boss(this.ctx, 0, 0);
     this.pillbugList = Array.from({ length: 50 }).map(() => new Pillbug(this.ctx, 0, 0));
     this.scorpionList = Array.from({ length: 10 }).map(() => new Scorpion(this.ctx, 0, 0));
-    this.boss = new Boss(this.ctx, 0, 0);
     this.bgImage = new Image();
     this.bgImage.src = bgImagePath;
     this.isGameStart = false;
@@ -54,12 +54,14 @@ class Game {
   }
 
   private setUp() {
+    const enemies = [...this.pillbugList, ...this.scorpionList, this.boss];
+
     this.player.setShotList(
       Array
         .from({ length: 15 })
         .map(() => {
           const shot = new Shot(this.ctx, 0, 0, 16, 36, shotPath);
-          shot.setTargetList([...this.pillbugList, ...this.scorpionList, this.boss]);
+          shot.setTargetList(enemies);
 
           return shot;
         }),
@@ -67,7 +69,7 @@ class Game {
         .from({ length: 30 })
         .map(() => {
           const shot = new Shot(this.ctx, 0, 0, 16, 36, shotPath);
-          shot.setTargetList([...this.pillbugList, ...this.scorpionList, this.boss]);
+          shot.setTargetList(enemies);
 
           return shot;
         }),
@@ -75,13 +77,13 @@ class Game {
         .from({ length: 30 })
         .map(() => {
           const homingShot = new HomingShot(this.ctx, 0, 0, 16, 36, missilePath);
-          homingShot.setTargetList([...this.pillbugList, ...this.scorpionList, this.boss]);
+          homingShot.setTargetList(enemies);
 
           return homingShot;
         })
     );
 
-    this.powerUp.setTarget(this.player);
+    this.powerUp.setPlayer(this.player);
 
     this.pillbugList.forEach(pillbug => {
       pillbug.setTarget(this.player);
@@ -150,11 +152,9 @@ class Game {
         if (this.isPaused) {
           this.isPaused = false;
           this.render();
-
-          return;
+        } else {
+          this.isPaused = true;
         }
-
-        this.isPaused = true;
       }
     });
 
@@ -166,7 +166,7 @@ class Game {
   private setUpScene() {
     this.scene.add('waiting', () => {
       if (this.isGameStart) {
-        this.player.setComing(
+        this.player.set(
           this.canvas.width / 2,
           this.canvas.height + 20,
           this.canvas.width / 2,
@@ -187,7 +187,7 @@ class Game {
 
     this.scene.add('coming', () => {
       if (this.scene.frame === 120) {
-        this.scene.use('scene_03');
+        this.scene.use('scene_01');
       }
     });
 
@@ -296,23 +296,12 @@ class Game {
     this.ctx.fillStyle = 'red';
     this.ctx.fillText(String(window.score).padStart(7, '0'), 25, 40);
 
-    this.scene.update();
-    this.player.update();
-    this.player.shotList.forEach(shot => shot.update());
-    this.player.levelTwoShotList.forEach(shot => shot.update());
-    this.player.levelThreeShotList.forEach(homingShot => homingShot.update());
-    this.powerUp.update();
-    this.pillbugList.forEach(pillbug => {
-      pillbug.update();
-      pillbug.shotList.forEach(shot => shot.update());
-    });
-    this.scorpionList.forEach(scorpion => {
-      scorpion.update();
-      scorpion.shotList.forEach(shot => shot.update());
-    });
-    this.boss.update();
-    this.boss.shotList.forEach(shot => shot.update());
-    this.boss.homingShotList.forEach(homingShot => homingShot.update());
+    this.scene.render();
+    this.player.render();
+    this.boss.render();
+    this.powerUp.render();
+    this.pillbugList.forEach(pillbug => pillbug.render());
+    this.scorpionList.forEach(scorpion => scorpion.render());
 
     if (this.isPaused) {
       this.ctx.font = 'bold 48px sans-serif';

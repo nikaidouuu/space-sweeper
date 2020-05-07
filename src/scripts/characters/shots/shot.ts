@@ -1,23 +1,23 @@
-import Character from './character';
-import Vector from './vector';
-import Player from './player';
-import Enemy from './enemies/enemy';
-import Scorpion from './enemies/scorpion';
-import Pillbug from './enemies/pillbug';
-import Boss from './enemies/boss';
+import Character from '../character';
+import Player from '../player';
+import Vector from '../../vector';
+import Enemy from '../enemies/enemy';
+import Boss from '../enemies/boss';
+import Pillbug from '../enemies/pillbug';
+import Scorpion from '../enemies/scorpion';
 
 class Shot extends Character {
   protected power: number;
   protected targetList: Array<Player | Enemy>;
 
   constructor(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, imagePath: string) {
-    super(ctx, x, y, w, h, imagePath, 5, 0);
+    super(ctx, x, y, w, h, imagePath, 5.0, 0);
 
     this.power = 1;
     this.targetList = [];
   }
 
-  public set(x: number, y: number, speed: number = 5, power: number = 1) {
+  public set(x: number, y: number, speed: number = 5.0, power: number = 1) {
     this.point.set(x, y);
     this.speed = speed;
     this.power = power;
@@ -29,7 +29,11 @@ class Shot extends Character {
     this.targetList = targetList;
   }
 
-  public update() {
+  public render() {
+    this.update();
+  }
+
+  private update() {
     if (this.life <= 0) return;
 
     if (

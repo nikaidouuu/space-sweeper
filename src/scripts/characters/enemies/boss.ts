@@ -1,15 +1,15 @@
 import Enemy from './enemy';
-import HomingShot from '../homingShot';
-import Vector from '../vector';
-import imagePath from '../../assets/images/boss/boss_sprites/Attack_01_000.png';
-import explosionSoundPath from '../../assets/sounds/Explosion2.mp3';
-import destroyedPath1 from '../../assets/images/boss/effects_sprites/Explosion_005.png';
-import destroyedPath2 from '../../assets/images/boss/effects_sprites/Explosion_006.png';
-import destroyedPath3 from '../../assets/images/boss/effects_sprites/Explosion_007.png';
-import destroyedPath4 from '../../assets/images/boss/effects_sprites/Explosion_008.png';
+import HomingShot from '../shots/homingShot';
+import Vector from '../../vector';
+import imagePath from '../../../assets/images/boss/boss_sprites/Attack_01_000.png';
+import explosionSoundPath from '../../../assets/sounds/Explosion2.mp3';
+import destroyedPath1 from '../../../assets/images/boss/effects_sprites/Explosion_005.png';
+import destroyedPath2 from '../../../assets/images/boss/effects_sprites/Explosion_006.png';
+import destroyedPath3 from '../../../assets/images/boss/effects_sprites/Explosion_007.png';
+import destroyedPath4 from '../../../assets/images/boss/effects_sprites/Explosion_008.png';
 
 class Boss extends Enemy {
-  public homingShotList: HomingShot[] | null;
+  private homingShotList: HomingShot[];
 
   constructor(ctx: CanvasRenderingContext2D, x: number, y: number) {
     super(ctx, x, y, 120, 132, imagePath, explosionSoundPath, 2.0);
@@ -21,10 +21,16 @@ class Boss extends Enemy {
     this.homingShotList = homingShotList;
   }
 
-  public fireHoming(x = 0.0, y = 1.0, speed = 3.0) {
+  public render() {
+    this.update();
+    this.shotList.forEach(shot => shot.render());
+    this.homingShotList.forEach(homingShot => homingShot.render());
+  }
+
+  private fireHoming(x = 0.0, y = 1.0, speed = 3.0) {
     for (const homingShot of this.homingShotList) {
       if (homingShot.life <= 0) {
-        homingShot.set(this.point.x, this.point.y, speed);
+        homingShot.set(this.point.x, this.point.y + 25.0, speed);
         homingShot.setVector(x, y);
 
         break;
@@ -32,7 +38,7 @@ class Boss extends Enemy {
     }
   }
 
-  public update() {
+  private update() {
     if (this.isDestroyed) {
       if (this.frame === 0) {
         this.explosionSound.play();
@@ -60,8 +66,8 @@ class Boss extends Enemy {
       case 'coming':
         this.point.y += this.speed;
 
-        if (this.point.y >= 100) {
-          this.point.y = 100;
+        if (this.point.y >= 100.0) {
+          this.point.y = 100.0;
           this.mode = 'fighting';
           this.frame = 0;
         }

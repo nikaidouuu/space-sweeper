@@ -1,30 +1,30 @@
-import Point from './point';
 import Character from './character';
-import Shot from './shot';
-import HomingShot from './homingShot';
-import imagePath1 from '../assets/images/player/explosion/Explosion_1_000.png';
-import imagePath2 from '../assets/images/player/explosion/Explosion_2_000.png';
-import imagePath3 from '../assets/images/player/explosion/Explosion_3_000.png';
-import destroyedPath1 from '../assets/images/player/explosion/Explosion_1_005.png';
-import destroyedPath2 from '../assets/images/player/explosion/Explosion_1_006.png';
-import destroyedPath3 from '../assets/images/player/explosion/Explosion_1_008.png';
-import shotSoundPath from '../assets/sounds/Shot.mp3';
-import explosionSoundPath from '../assets/sounds/Explosion1.mp3';
+import Shot from './shots/shot';
+import HomingShot from './shots/homingShot';
+import Point from '../point';
+import imagePath1 from '../../assets/images/player/explosion/Explosion_1_000.png';
+import imagePath2 from '../../assets/images/player/explosion/Explosion_2_000.png';
+import imagePath3 from '../../assets/images/player/explosion/Explosion_3_000.png';
+import destroyedPath1 from '../../assets/images/player/explosion/Explosion_1_005.png';
+import destroyedPath2 from '../../assets/images/player/explosion/Explosion_1_006.png';
+import destroyedPath3 from '../../assets/images/player/explosion/Explosion_1_008.png';
+import shotSoundPath from '../../assets/sounds/Shot.mp3';
+import explosionSoundPath from '../../assets/sounds/Explosion1.mp3';
 
 type Coming = {
   isComing: boolean;
   startTime: number;
-  startPosition: Point;
-  endPosition: Point;
+  startPoint: Point;
+  endPoint: Point;
 };
 
 class Player extends Character {
-  public level: number;
   public coming: Coming;
-  public shotList: Shot[];
-  public levelTwoShotList: Shot[];
-  public levelThreeShotList: HomingShot[];
   public isDestroyed: boolean;
+  private level: number;
+  private shotList: Shot[];
+  private levelTwoShotList: Shot[];
+  private levelThreeShotList: HomingShot[];
   private shotChecker: number;
   private shotDelay: number;
   private readonly shotSound: HTMLAudioElement;
@@ -33,13 +33,14 @@ class Player extends Character {
   constructor(ctx: CanvasRenderingContext2D, x: number, y: number) {
     super(ctx, x, y, 80, 64, imagePath1, 3.0, 0);
 
-    this.level = 1;
     this.coming = {
       isComing: false,
       startTime: null,
-      startPosition: null,
-      endPosition: null
+      startPoint: null,
+      endPoint: null
     };
+    this.isDestroyed = false;
+    this.level = 1;
     this.shotList = null;
     this.levelTwoShotList = null;
     this.levelThreeShotList = null;
@@ -47,16 +48,15 @@ class Player extends Character {
     this.shotDelay = 10;
     this.shotSound = new Audio(shotSoundPath);
     this.explosionSound = new Audio(explosionSoundPath);
-    this.isDestroyed = false;
   }
 
-  public setComing(startX: number, startY: number, endX: number, endY: number) {
+  public set(startX: number, startY: number, endX: number, endY: number) {
+    this.point.set(startX, startY);
     this.life = 1;
     this.coming.isComing = true;
     this.coming.startTime = Date.now();
-    this.coming.startPosition = new Point(startX, startY);
-    this.coming.endPosition = new Point(endX, endY);
-    this.point.set(startX, startY);
+    this.coming.startPoint = new Point(startX, startY);
+    this.coming.endPoint = new Point(endX, endY);
   }
 
   public setShotList(shotList: Shot[], levelTwoShotList: Shot[], levelThreeShotList: HomingShot[]) {
@@ -83,7 +83,14 @@ class Player extends Character {
     }
   }
 
-  public update() {
+  public render() {
+    this.update();
+    this.shotList.forEach(shot => shot.render());
+    this.levelTwoShotList.forEach(shot => shot.render());
+    this.levelThreeShotList.forEach(homingShot => homingShot.render());
+  }
+
+  private update() {
     if (this.isDestroyed) {
       if (this.frame === 0) {
         this.explosionSound.play();
@@ -108,15 +115,15 @@ class Player extends Character {
 
     if (this.coming.isComing) {
       const comingTime = (Date.now() - this.coming.startTime) / 1000;
-      let y = this.coming.startPosition.y - comingTime * 50;
+      let y = this.coming.startPoint.y - comingTime * 50;
 
-      if (y <= this.coming.endPosition.y) {
+      if (y <= this.coming.endPoint.y) {
         this.coming.isComing = false;
-        y = this.coming.endPosition.y;
+        y = this.coming.endPoint.y;
       }
 
       if (Date.now() % 100 < 30) {
-        this.ctx.globalAlpha = 0.5;
+        this.ctx.globalAlpha = 0.55;
       }
 
       this.point.set(this.point.x, y);
@@ -147,7 +154,7 @@ class Player extends Character {
 
           for (const shot of this.shotList) {
             if (shot.life <= 0) {
-              shot.set(this.point.x, this.point.y, 10.0);
+              shot.set(this.point.x, this.point.y - 15, 10.0);
               this.shotChecker = -this.shotDelay;
 
               break;
@@ -162,9 +169,9 @@ class Player extends Character {
               const CW = 280 * (Math.PI / 180);
 
               if (leftShot.life <= 0 && rightShot.life <= 0) {
-                leftShot.set(this.point.x, this.point.y, 10.0);
+                leftShot.set(this.point.x, this.point.y - 15, 10.0);
                 leftShot.setVectorFromAngle(CCW);
-                rightShot.set(this.point.x, this.point.y, 10.0);
+                rightShot.set(this.point.x, this.point.y - 15, 10.0);
                 rightShot.setVectorFromAngle(CW);
                 this.shotChecker = -this.shotDelay;
 
@@ -181,9 +188,9 @@ class Player extends Character {
               const CW = 295 * (Math.PI / 180);
 
               if (leftShot.life <= 0 && rightShot.life <= 0) {
-                leftShot.set(this.point.x, this.point.y, 12.0);
+                leftShot.set(this.point.x, this.point.y - 15, 12.0);
                 leftShot.setVectorFromAngle(CCW);
-                rightShot.set(this.point.x, this.point.y, 12.0);
+                rightShot.set(this.point.x, this.point.y - 15, 12.0);
                 rightShot.setVectorFromAngle(CW);
                 this.shotChecker = -this.shotDelay;
 

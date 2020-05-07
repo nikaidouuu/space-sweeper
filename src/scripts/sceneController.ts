@@ -2,9 +2,9 @@ type Scene = { [scene: string]: () => void };
 type ValueOf<T> = T[keyof T];
 
 class SceneController {
-  private scene: Scene;
-  private activeScene: ValueOf<Scene>;
   public frame: number;
+  private readonly scene: Scene;
+  private activeScene: ValueOf<Scene>;
 
   constructor() {
     this.scene = {};
@@ -23,7 +23,7 @@ class SceneController {
     this.frame = -1;
   }
 
-  public update() {
+  public render() {
     this.activeScene();
     this.frame++;
   }

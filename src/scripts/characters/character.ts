@@ -1,5 +1,5 @@
-import Point from './point';
-import Vector from './vector';
+import Point from '../point';
+import Vector from '../vector';
 
 // enum CharacterType {
 //   PILLBUG,
@@ -28,8 +28,8 @@ abstract class Character {
   public height: number;
   public life: number;
   public frame: number;
-  public angle: number;
   protected readonly ctx: CanvasRenderingContext2D;
+  protected angle: number;
   protected speed: number;
   private readonly image: HTMLImageElement;
 
@@ -40,8 +40,8 @@ abstract class Character {
     this.height = h;
     this.life = life;
     this.frame = 0;
-    this.angle = 270 * (Math.PI / 180);
     this.ctx = ctx;
+    this.angle = 270 * (Math.PI / 180);
     this.speed = speed;
     this.image = new Image();
     this.image.src = imagePath;
@@ -59,13 +59,13 @@ abstract class Character {
     this.vector.set(cos, sin);
   }
 
-  public setImage(w: number, h: number, imagePath: string) {
+  protected setImage(w: number, h: number, imagePath: string) {
     this.width = w;
     this.height = h;
     this.image.src = imagePath;
   }
 
-  public draw() {
+  protected draw() {
     const offsetX = this.width / 2;
     const offsetY = this.height / 2;
 
@@ -76,7 +76,7 @@ abstract class Character {
     );
   }
 
-  public drawWithAngle() {
+  protected drawWithAngle() {
     const offsetX = this.width / 2;
     const offsetY = this.height / 2;
 
@@ -93,7 +93,9 @@ abstract class Character {
     this.ctx.restore();
   }
 
-  protected abstract update(): void;
+  protected abstract set(...args: any): void;
+
+  protected abstract render(): void;
 }
 
 export default Character;

@@ -1,15 +1,20 @@
 import Enemy from './enemy';
-import imagePath from '../../assets/images/ufo/Ships_Sprites/Explosion/Ship_04_Explosion_000.png';
-import destroyedPath1 from '../../assets/images/ufo/Ships_Sprites/Explosion/Ship_04_Explosion_007.png';
-import destroyedPath2 from '../../assets/images/ufo/Ships_Sprites/Explosion/Ship_04_Explosion_008.png';
-import explosionSoundPath from '../../assets/sounds/Explosion2.mp3';
+import imagePath from '../../../assets/images/ufo/Ships_Sprites/Explosion/Ship_04_Explosion_000.png';
+import destroyedPath1 from '../../../assets/images/ufo/Ships_Sprites/Explosion/Ship_04_Explosion_007.png';
+import destroyedPath2 from '../../../assets/images/ufo/Ships_Sprites/Explosion/Ship_04_Explosion_008.png';
+import explosionSoundPath from '../../../assets/sounds/Explosion2.mp3';
 
 class Pillbug extends Enemy {
   constructor(ctx: CanvasRenderingContext2D, x: number, y: number) {
     super(ctx, x, y, 80, 64, imagePath, explosionSoundPath, 3.0);
   }
 
-  public update() {
+  public render() {
+    this.update();
+    this.shotList.forEach(shot => shot.render());
+  }
+
+  private update() {
     if (this.isDestroyed) {
       if (this.frame === 0) {
         this.explosionSound.play();
@@ -36,10 +41,10 @@ class Pillbug extends Enemy {
     if (this.frame === 100) {
       switch (this.mode) {
         case 'left':
-          this.setVectorFromAngle(125 * (Math.PI / 180));
+          this.setVectorFromAngle(125.0 * (Math.PI / 180.0));
           break;
         case 'right':
-          this.setVectorFromAngle(55 * (Math.PI / 180));
+          this.setVectorFromAngle(55.0 * (Math.PI / 180.0));
           break;
         default:
           break;

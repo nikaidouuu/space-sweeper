@@ -1,16 +1,21 @@
 import Enemy from './enemy';
-import Vector from '../vector';
-import imagePath from '../../assets/images/ufo/Ships_Sprites/Explosion/Ship_03_Explosion_000.png';
-import destroyedPath1 from '../../assets/images/ufo/Ships_Sprites/Explosion/Ship_04_Explosion_007.png';
-import destroyedPath2 from '../../assets/images/ufo/Ships_Sprites/Explosion/Ship_04_Explosion_008.png';
-import explosionSoundPath from '../../assets/sounds/Explosion2.mp3';
+import Vector from '../../vector';
+import imagePath from '../../../assets/images/ufo/Ships_Sprites/Explosion/Ship_03_Explosion_000.png';
+import destroyedPath1 from '../../../assets/images/ufo/Ships_Sprites/Explosion/Ship_04_Explosion_007.png';
+import destroyedPath2 from '../../../assets/images/ufo/Ships_Sprites/Explosion/Ship_04_Explosion_008.png';
+import explosionSoundPath from '../../../assets/sounds/Explosion2.mp3';
 
 class Scorpion extends Enemy {
   constructor(ctx: CanvasRenderingContext2D, x: number, y: number) {
     super(ctx, x, y, 80, 64, imagePath, explosionSoundPath, 2.0);
   }
 
-  public update() {
+  public render() {
+    this.update();
+    this.shotList.forEach(shot => shot.render());
+  }
+
+  private update() {
     if (this.isDestroyed) {
       if (this.frame === 0) {
         this.explosionSound.play();
