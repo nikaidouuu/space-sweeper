@@ -4,7 +4,6 @@ import Shot from '../shots/shot';
 abstract class Enemy extends Character {
   public isDestroyed: boolean;
   protected shotList: Shot[];
-  protected mode: string;
   protected target: Character;
   protected readonly explosionSound: HTMLAudioElement;
 
@@ -14,7 +13,6 @@ abstract class Enemy extends Character {
     this.speed = speed;
     this.isDestroyed = false;
     this.shotList = null;
-    this.mode = '';
     this.target = null;
     this.explosionSound = new Audio(explosionSoundPath);
   }
@@ -27,10 +25,6 @@ abstract class Enemy extends Character {
 
   public setShotList(shotList: Shot[]) {
     this.shotList = shotList;
-  }
-
-  public setMode(mode: string) {
-    this.mode = mode;
   }
 
   public setTarget(target: Character) {

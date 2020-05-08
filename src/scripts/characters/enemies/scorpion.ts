@@ -1,8 +1,8 @@
 import Enemy from './enemy';
 import Vector from '../../vector';
 import imagePath from '../../../assets/images/ufo/Ships_Sprites/Explosion/Ship_03_Explosion_000.png';
-import destroyedPath1 from '../../../assets/images/ufo/Ships_Sprites/Explosion/Ship_04_Explosion_007.png';
-import destroyedPath2 from '../../../assets/images/ufo/Ships_Sprites/Explosion/Ship_04_Explosion_008.png';
+import destroyedPath1 from '../../../assets/images/ufo/Ships_Sprites/Explosion/Explosion_007.png';
+import destroyedPath2 from '../../../assets/images/ufo/Ships_Sprites/Explosion/Explosion_008.png';
 import explosionSoundPath from '../../../assets/sounds/Explosion2.mp3';
 
 class Scorpion extends Enemy {
@@ -43,12 +43,12 @@ class Scorpion extends Enemy {
       this.fire(tv.x, tv.y, 3.5);
     }
 
-    this.point.x += Math.sin(this.frame / 10);
-    this.point.y += this.speed;
-
     if (this.point.y - this.height > this.ctx.canvas.height) {
       this.life = 0;
     }
+
+    this.point.x += Math.sin(this.frame / 10);
+    this.point.y += this.speed;
 
     this.frame++;
     this.draw();

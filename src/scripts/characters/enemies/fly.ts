@@ -1,12 +1,12 @@
 import Enemy from './enemy';
-import imagePath from '../../../assets/images/ufo/Ships_Sprites/Explosion/Ship_04_Explosion_000.png';
+import imagePath from '../../../assets/images/ufo/Ships_Sprites/Explosion/Ship_06_Explosion_000.png';
 import destroyedPath1 from '../../../assets/images/ufo/Ships_Sprites/Explosion/Explosion_007.png';
 import destroyedPath2 from '../../../assets/images/ufo/Ships_Sprites/Explosion/Explosion_008.png';
 import explosionSoundPath from '../../../assets/sounds/Explosion2.mp3';
 
-class Pillbug extends Enemy {
+class Fly extends Enemy {
   constructor(ctx: CanvasRenderingContext2D, x: number, y: number) {
-    super(ctx, x, y, 80, 64, imagePath, explosionSoundPath, 3.0);
+    super(ctx, x, y, 90, 56, imagePath, explosionSoundPath, 3.5);
   }
 
   public render() {
@@ -22,7 +22,7 @@ class Pillbug extends Enemy {
       } else if (this.frame >= 8 && this.frame < 16) {
         this.setImage(80, 64, destroyedPath2);
       } else if (this.frame >= 16) {
-        this.setImage(80, 64, imagePath);
+        this.setImage(90, 56, imagePath);
         this.isDestroyed = false;
 
         return;
@@ -34,22 +34,33 @@ class Pillbug extends Enemy {
 
     if (this.life <= 0) return;
 
-    if (this.frame === 30) {
-      this.fire();
+    if (this.frame === 60) {
+      this.setVector(0, 0);
     }
 
-    if (this.frame === 100) {
+    if (this.frame === 80 || this.frame === 160) {
+      const angleList = [0, 45, 90, 135, 180, 225, 315];
+
+      for (const angle of angleList) {
+        const radian = angle * (Math.PI / 180);
+        const cos = Math.cos(radian);
+        const sin = Math.sin(radian);
+
+        this.fire(cos, sin, 3.0);
+      }
+    }
+
+    if (this.frame === 190) {
       if (this.point.x > this.ctx.canvas.width / 2) {
-        this.setVectorFromAngle(55.0 * (Math.PI / 180.0));
+        this.setVector(1, 0);
       } else {
-        this.setVectorFromAngle(125.0 * (Math.PI / 180.0));
+        this.setVector(-1, 0);
       }
     }
 
     if (
       this.point.x + this.width < 0 ||
-      this.point.x - this.width > this.ctx.canvas.width ||
-      this.point.y - this.height > this.ctx.canvas.height
+      this.point.x - this.width > this.ctx.canvas.width
     ) {
       this.life = 0;
     }
@@ -62,4 +73,4 @@ class Pillbug extends Enemy {
   }
 }
 
-export default Pillbug;
+export default Fly;

@@ -1,26 +1,6 @@
 import Point from '../point';
 import Vector from '../vector';
 
-// enum CharacterType {
-//   PILLBUG,
-//   SHOT
-// }
-
-// class Character {
-//   public static CharacterFactory(type: CharacterType) {
-//     switch (type) {
-//       case CharacterType.PILLBUG:
-//         Enemy.EnemyFactory(EnemyType.PILLBUG)
-//       case CharacterType.SHOT:
-//         return new Shot();
-//       default:
-//         break;
-//     }
-//   }
-// }
-
-// Character.CharacterFactory(CharacterType.ENEMY)
-
 abstract class Character {
   public point: Point;
   public vector: Vector;

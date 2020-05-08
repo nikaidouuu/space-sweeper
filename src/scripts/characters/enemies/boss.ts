@@ -8,17 +8,25 @@ import destroyedPath2 from '../../../assets/images/boss/effects_sprites/Explosio
 import destroyedPath3 from '../../../assets/images/boss/effects_sprites/Explosion_007.png';
 import destroyedPath4 from '../../../assets/images/boss/effects_sprites/Explosion_008.png';
 
+type BossMode = 'coming' | 'fighting';
+
 class Boss extends Enemy {
   private homingShotList: HomingShot[];
+  private mode: BossMode;
 
   constructor(ctx: CanvasRenderingContext2D, x: number, y: number) {
     super(ctx, x, y, 120, 132, imagePath, explosionSoundPath, 2.0);
 
     this.homingShotList = null;
+    this.mode = null;
   }
 
   public setHomingShotList(homingShotList: HomingShot[]) {
     this.homingShotList = homingShotList;
+  }
+
+  public setMode(mode: BossMode) {
+    this.mode = mode;
   }
 
   public render() {

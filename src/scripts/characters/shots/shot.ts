@@ -4,6 +4,7 @@ import Vector from '../../vector';
 import Enemy from '../enemies/enemy';
 import Boss from '../enemies/boss';
 import Pillbug from '../enemies/pillbug';
+import Fly from '../enemies/fly';
 import Scorpion from '../enemies/scorpion';
 
 class Shot extends Character {
@@ -70,10 +71,12 @@ class Shot extends Character {
 
           if (target instanceof Pillbug) {
             window.score = Math.min(window.score + 500, 9999999);
-          } else if (target instanceof Scorpion) {
+          } else if (target instanceof Fly) {
             window.score = Math.min(window.score + 1000, 9999999);
+          } else if (target instanceof Scorpion) {
+            window.score = Math.min(window.score + 1500, 9999999);
           } else if (target instanceof Boss) {
-            window.score = Math.min(window.score + 2000, 9999999);
+            window.score = Math.min(window.score + 3000, 9999999);
           }
         }
       }

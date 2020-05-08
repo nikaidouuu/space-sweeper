@@ -5,10 +5,11 @@ import Shot from './characters/shots/shot';
 import HomingShot from './characters/shots/homingShot';
 import Boss from './characters/enemies/boss';
 import Pillbug from './characters/enemies/pillbug';
+import Fly from './characters/enemies/fly';
 import Scorpion from './characters/enemies/scorpion';
 import bgImagePath from '../assets/images/bg/Space_BG_04.png';
 import shotPath from '../assets/images/player/effects/Fire_Shot_5_2.png';
-import missilePath from '../assets/images/object/props/Missile_01.png';
+import missilePath from '../assets/images/object/props/Missile_03.png';
 import bossShotPath from '../assets/images/boss/effects/Shot_02.png';
 import bossMissilePath from '../assets/images/boss/effects/Missile.png';
 import enemyShotPath from '../assets/images/ufo/ship_effects/Fire_Shot_1_4.png';
@@ -25,6 +26,7 @@ class Game {
   private readonly boss: Boss;
   private readonly pillbugList: Pillbug[];
   private readonly scorpionList: Scorpion[];
+  private readonly flyList: Fly[];
   private readonly bgImage: HTMLImageElement;
   private isGameStart: boolean;
   private isPaused: boolean;
@@ -39,6 +41,7 @@ class Game {
     this.powerUp = new PowerUp(this.ctx, 0, 0);
     this.boss = new Boss(this.ctx, 0, 0);
     this.pillbugList = Array.from({ length: 50 }).map(() => new Pillbug(this.ctx, 0, 0));
+    this.flyList = Array.from({ length: 10 }).map(() => new Fly(this.ctx, 0, 0));
     this.scorpionList = Array.from({ length: 10 }).map(() => new Scorpion(this.ctx, 0, 0));
     this.bgImage = new Image();
     this.bgImage.src = bgImagePath;
@@ -54,7 +57,7 @@ class Game {
   }
 
   private setUp() {
-    const enemies = [...this.pillbugList, ...this.scorpionList, this.boss];
+    const enemies = [...this.pillbugList, ...this.flyList, ...this.scorpionList, this.boss];
 
     this.player.setShotList(
       Array
@@ -90,7 +93,22 @@ class Game {
 
       pillbug.setShotList(
         Array
-          .from({ length: 15 })
+          .from({ length: 10 })
+          .map(() => {
+            const shot = new Shot(this.ctx, 0, 0, 24, 24, enemyShotPath);
+            shot.setTargetList([this.player]);
+
+            return shot;
+          })
+      );
+    });
+
+    this.flyList.forEach(fly => {
+      fly.setTarget(this.player);
+
+      fly.setShotList(
+        Array
+          .from({ length: 20 })
           .map(() => {
             const shot = new Shot(this.ctx, 0, 0, 24, 24, enemyShotPath);
             shot.setTargetList([this.player]);
@@ -105,7 +123,7 @@ class Game {
 
       scorpion.setShotList(
         Array
-          .from({ length: 15 })
+          .from({ length: 10 })
           .map(() => {
             const shot = new Shot(this.ctx, 0, 0, 24, 24, enemyShotPath);
             shot.setTargetList([this.player]);
@@ -187,7 +205,7 @@ class Game {
 
     this.scene.add('coming', () => {
       if (this.scene.frame === 120) {
-        this.scene.use('scene_01');
+        this.scene.use('scene_boss');
       }
     });
 
@@ -197,7 +215,6 @@ class Game {
           if (pillbug.life <= 0) {
             pillbug.set(CANVAS_WIDTH * 0.4, -pillbug.height, 1);
             pillbug.setVector(0, 1);
-            pillbug.setMode('left');
 
             break;
           }
@@ -207,7 +224,6 @@ class Game {
           if (pillbug.life <= 0) {
             pillbug.set(CANVAS_WIDTH * 0.6, -pillbug.height, 1);
             pillbug.setVector(0, 1);
-            pillbug.setMode('right');
 
             break;
           }
@@ -230,7 +246,39 @@ class Game {
     });
 
     this.scene.add('scene_02', () => {
-      if (this.scene.frame <= 600 && this.scene.frame % 60 === 0) {
+      if (this.scene.frame <= 480 && this.scene.frame % 60 === 0) {
+        for (const fly of this.flyList) {
+          if (fly.life <= 0) {
+            if (this.scene.frame % 120 === 0) {
+              fly.set(this.canvas.width * ((Math.random() * 0.4) + 0.1), -fly.height, 1);
+              fly.setVector(0, 1);
+            } else {
+              fly.set(this.canvas.width * ((Math.random() * 0.4) + 0.5), -fly.height, 1);
+              fly.setVector(0, 1);
+            }
+
+            break;
+          }
+        }
+      }
+
+      if (this.scene.frame === 650) {
+        this.scene.use('scene_03');
+      }
+
+      if (this.player.life <= 0) {
+        for (const fly of this.flyList) {
+          if (fly.life > 0) {
+            fly.life = 0;
+          }
+        }
+
+        this.scene.use('waiting');
+      }
+    });
+
+    this.scene.add('scene_03', () => {
+      if (this.scene.frame % 60 === 0) {
         for (const scorpion of this.scorpionList) {
           if (scorpion.life <= 0) {
             if (this.scene.frame % 120 === 0) {
@@ -245,7 +293,7 @@ class Game {
       }
 
       if (this.scene.frame === 650) {
-        this.scene.use('scene_03');
+        this.scene.use('scene_boss');
       }
 
       if (this.player.life <= 0) {
@@ -259,7 +307,7 @@ class Game {
       }
     });
 
-    this.scene.add('scene_03', () => {
+    this.scene.add('scene_boss', () => {
       if (this.scene.frame === 0) {
         this.boss.set(this.canvas.width / 2, -this.boss.height, 100);
         this.boss.setMode('coming');
@@ -301,6 +349,7 @@ class Game {
     this.boss.render();
     this.powerUp.render();
     this.pillbugList.forEach(pillbug => pillbug.render());
+    this.flyList.forEach(fly => fly.render());
     this.scorpionList.forEach(scorpion => scorpion.render());
 
     if (this.isPaused) {
