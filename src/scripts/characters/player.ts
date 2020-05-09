@@ -21,6 +21,7 @@ type Coming = {
 class Player extends Character {
   public coming: Coming;
   public isDestroyed: boolean;
+  private imageList: HTMLImageElement[];
   private level: number;
   private shotList: Shot[];
   private levelTwoShotList: Shot[];
@@ -40,6 +41,19 @@ class Player extends Character {
       endPoint: null
     };
     this.isDestroyed = false;
+    this.imageList = [
+      imagePath1,
+      imagePath2,
+      imagePath3,
+      destroyedPath1,
+      destroyedPath2,
+      destroyedPath3
+    ].map(path => {
+      const image = new Image();
+      image.src = path;
+
+      return image;
+    });
     this.level = 1;
     this.shotList = null;
     this.levelTwoShotList = null;
@@ -69,14 +83,11 @@ class Player extends Character {
     this.level++;
 
     switch (this.level) {
-      case 1:
-        this.setImage(80, 64, imagePath1);
-        break;
       case 2:
-        this.setImage(80, 64, imagePath2);
+        this.setImage(80, 64, this.imageList[1]);
         break;
       case 3:
-        this.setImage(88, 70, imagePath3);
+        this.setImage(88, 70, this.imageList[2]);
         break;
       default:
         break;
@@ -94,13 +105,13 @@ class Player extends Character {
     if (this.isDestroyed) {
       if (this.frame === 0) {
         this.explosionSound.play();
-        this.setImage(80, 64, destroyedPath1);
+        this.setImage(80, 64, this.imageList[3]);
       } else if (this.frame >= 8 && this.frame < 16) {
-        this.setImage(80, 64, destroyedPath2);
+        this.setImage(80, 64, this.imageList[4]);
       } else if (this.frame >= 16 && this.frame < 24) {
-        this.setImage(80, 64, destroyedPath3);
+        this.setImage(80, 64, this.imageList[5]);
       } else if (this.frame >= 24) {
-        this.setImage(80, 64, imagePath1);
+        this.setImage(80, 64, this.imageList[0]);
         this.level = 1;
         this.isDestroyed = false;
 

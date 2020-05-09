@@ -11,7 +11,7 @@ abstract class Character {
   protected readonly ctx: CanvasRenderingContext2D;
   protected angle: number;
   protected speed: number;
-  private readonly image: HTMLImageElement;
+  private image: HTMLImageElement;
 
   constructor(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, imagePath: string, speed: number, life: number) {
     this.point = new Point(x, y);
@@ -39,10 +39,10 @@ abstract class Character {
     this.vector.set(cos, sin);
   }
 
-  protected setImage(w: number, h: number, imagePath: string) {
+  protected setImage(w: number, h: number, image: HTMLImageElement) {
     this.width = w;
     this.height = h;
-    this.image.src = imagePath;
+    this.image = image;
   }
 
   protected draw() {

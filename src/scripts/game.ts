@@ -205,7 +205,7 @@ class Game {
 
     this.scene.add('coming', () => {
       if (this.scene.frame === 120) {
-        this.scene.use('scene_boss');
+        this.scene.use('scene_01');
       }
     });
 

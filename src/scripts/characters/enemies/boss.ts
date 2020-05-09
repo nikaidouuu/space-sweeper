@@ -11,12 +11,25 @@ import destroyedPath4 from '../../../assets/images/boss/effects_sprites/Explosio
 type BossMode = 'coming' | 'fighting';
 
 class Boss extends Enemy {
+  private imageList: HTMLImageElement[];
   private homingShotList: HomingShot[];
   private mode: BossMode;
 
   constructor(ctx: CanvasRenderingContext2D, x: number, y: number) {
     super(ctx, x, y, 120, 132, imagePath, explosionSoundPath, 2.0);
 
+    this.imageList = [
+      imagePath,
+      destroyedPath1,
+      destroyedPath2,
+      destroyedPath3,
+      destroyedPath4
+    ].map(path => {
+      const image = new Image();
+      image.src = path;
+
+      return image;
+    });
     this.homingShotList = null;
     this.mode = null;
   }
@@ -50,15 +63,15 @@ class Boss extends Enemy {
     if (this.isDestroyed) {
       if (this.frame === 0) {
         this.explosionSound.play();
-        this.setImage(120, 132, destroyedPath1);
+        this.setImage(120, 132, this.imageList[1]);
       } else if (this.frame >= 8 && this.frame < 16) {
-        this.setImage(120, 132, destroyedPath2);
+        this.setImage(120, 132, this.imageList[2]);
       } else if (this.frame >= 16 && this.frame < 24) {
-        this.setImage(120, 132, destroyedPath3);
+        this.setImage(120, 132, this.imageList[3]);
       } else if (this.frame >= 24 && this.frame < 32) {
-        this.setImage(120, 132, destroyedPath4);
+        this.setImage(120, 132, this.imageList[4]);
       } else if (this.frame >= 32) {
-        this.setImage(120, 132, imagePath);
+        this.setImage(120, 132, this.imageList[0]);
         this.isDestroyed = false;
 
         return;

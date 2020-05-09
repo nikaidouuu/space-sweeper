@@ -5,8 +5,17 @@ import destroyedPath2 from '../../../assets/images/ufo/Ships_Sprites/Explosion/E
 import explosionSoundPath from '../../../assets/sounds/Explosion2.mp3';
 
 class Pillbug extends Enemy {
+  private imageList: HTMLImageElement[];
+
   constructor(ctx: CanvasRenderingContext2D, x: number, y: number) {
     super(ctx, x, y, 80, 64, imagePath, explosionSoundPath, 3.0);
+
+    this.imageList = [imagePath, destroyedPath1, destroyedPath2].map(path => {
+      const image = new Image();
+      image.src = path;
+
+      return image;
+    });
   }
 
   public render() {
@@ -18,11 +27,11 @@ class Pillbug extends Enemy {
     if (this.isDestroyed) {
       if (this.frame === 0) {
         this.explosionSound.play();
-        this.setImage(80, 64, destroyedPath1);
+        this.setImage(80, 64, this.imageList[1]);
       } else if (this.frame >= 8 && this.frame < 16) {
-        this.setImage(80, 64, destroyedPath2);
+        this.setImage(80, 64, this.imageList[2]);
       } else if (this.frame >= 16) {
-        this.setImage(80, 64, imagePath);
+        this.setImage(80, 64, this.imageList[0]);
         this.isDestroyed = false;
 
         return;
