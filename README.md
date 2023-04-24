@@ -3,7 +3,7 @@
 ## Introduction
 [![Space Sweeper Youtube](https://img.youtube.com/vi/BHA27cM-pHA/0.jpg)](https://youtu.be/BHA27cM-pHA)
 
-[Space Sweeper](https://www.spacesweeper.site/)는 별도의 라이브러리를 사용하지 않고 구현한 2D 종스크롤 웹 슈팅 게임입니다. 파워업 아이템을 획득해 탄막을 강화시키고, 적과 보스를 처치할 수 있습니다.
+[Space Sweeper](https://adoring-archimedes-c37b4b.netlify.app/)는 별도의 라이브러리를 사용하지 않고 구현한 2D 종스크롤 웹 슈팅 게임입니다. 파워업 아이템을 획득해 탄막을 강화시키고, 적과 보스를 처치할 수 있습니다.
 
 ## Control
 - 이동 - **WASD**
